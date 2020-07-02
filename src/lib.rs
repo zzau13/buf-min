@@ -1,3 +1,5 @@
+// Adapted from [`bytes`](https://github.com/tokio-rs/bytes)
+
 #[cfg(feature = "bytes-buf")]
 use bytes::{Bytes, BytesMut};
 
@@ -57,12 +59,11 @@ impl Buffer for BytesMut {
 
     #[inline]
     fn extend_from_slice(&mut self, src: &[u8]) {
-        let cnt = src.len();
-        self.reserve(cnt);
+        self.reserve(src.len());
         unsafe {
-            debug_assert!(self.capacity() - self.len() >= cnt);
-            std::ptr::copy_nonoverlapping(src.as_ptr(), self.buf_ptr(), cnt);
-            self.advance(cnt)
+            debug_assert!(self.capacity() - self.len() >= src.len());
+            std::ptr::copy_nonoverlapping(src.as_ptr(), self.buf_ptr(), src.len());
+            self.advance(src.len())
         }
     }
 
