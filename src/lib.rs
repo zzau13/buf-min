@@ -1,7 +1,5 @@
 // Adapted from [`bytes`](https://github.com/tokio-rs/bytes)
 
-use std::vec::Vec;
-
 #[cfg(feature = "bytes-buf")]
 use bytes::{Bytes, BytesMut};
 
@@ -45,61 +43,6 @@ pub trait Buffer {
     /// # Safety
     /// If buffer is full, can return invalid pointer
     unsafe fn buf_ptr(&mut self) -> *mut u8;
-}
-
-impl Buffer for Vec<u8> {
-    type Freeze = Vec<u8>;
-
-    #[inline]
-    fn with_capacity(capacity: usize) -> Self
-    where
-        Self: Sized,
-    {
-        Vec::with_capacity(capacity)
-    }
-
-    #[inline]
-    fn extend_from_slice(&mut self, src: &[u8]) {
-        self.reserve(src.len());
-        unsafe {
-            debug_assert!(self.capacity() - self.len() >= src.len());
-            std::ptr::copy_nonoverlapping(src.as_ptr(), self.buf_ptr(), src.len());
-            self.advance(src.len())
-        }
-    }
-
-    #[inline]
-    fn reserve(&mut self, additional: usize) {
-        let len = self.len();
-        let rem = self.capacity() - len;
-
-        if additional <= rem {
-            return;
-        }
-        self.reserve(additional);
-    }
-
-    #[inline]
-    fn freeze(self) -> Self::Freeze {
-        self
-    }
-
-    #[inline]
-    unsafe fn advance(&mut self, cnt: usize) {
-        let new_len = self.len() + cnt;
-        debug_assert!(
-            new_len <= self.capacity(),
-            "new_len = {}; capacity = {}",
-            new_len,
-            self.capacity()
-        );
-        self.set_len(new_len);
-    }
-
-    #[inline]
-    unsafe fn buf_ptr(&mut self) -> *mut u8 {
-        self.as_mut_ptr().add(self.len())
-    }
 }
 
 #[cfg(feature = "bytes-buf")]
@@ -152,16 +95,17 @@ impl Buffer for BytesMut {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "bytes-buf"))]
 mod test {
     use super::*;
+
+    use bytes::BytesMut;
 
     #[test]
     fn test() {
         let e = b"Hello world!";
-        let mut buf: Vec<u8> = Buffer::with_capacity(0);
+        let mut buf: BytesMut = Buffer::with_capacity(0);
         Buffer::extend_from_slice(&mut buf, e);
-        let buf: &[u8] = &Buffer::freeze(buf);
-        assert_eq!(e, buf)
+        assert_eq!(e, &Buffer::freeze(buf)[..])
     }
 }
