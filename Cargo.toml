@@ -1,6 +1,6 @@
 [package]
 name = "buf-min"
-version = "0.0.2"
+version = "0.1.0"
 authors = ["Juan Aguilar Santillana <mhpoin@gmail.com>"]
 description = "Minimal buffer traits"
 keywords = ["buffers"]
