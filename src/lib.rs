@@ -67,12 +67,12 @@ impl Buffer for BytesMut {
         }
     }
 
-    #[inline]
+    #[inline(always)]
     fn reserve(&mut self, additional: usize) {
         self.reserve(additional);
     }
 
-    #[inline]
+    #[inline(always)]
     fn freeze(self) -> Self::Freeze {
         self.freeze()
     }
@@ -86,6 +86,7 @@ impl Buffer for BytesMut {
             new_len,
             self.capacity()
         );
+        // TODO: inline
         self.set_len(new_len);
     }
 
