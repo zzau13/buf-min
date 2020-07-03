@@ -14,6 +14,8 @@ fn raw_static() -> Vec<u8> {
         const LEN: usize = HELLO.len();
 
             let mut buf: Vec<u8>  = Vec::with_capacity(LEN);
+            #[allow(unused_mut)]
+            let mut capacity = LEN;
             let mut curr = 0;
             macro_rules! buf_ptr {
                 () => {
@@ -23,7 +25,7 @@ fn raw_static() -> Vec<u8> {
 
             macro_rules! write_b {
                 ($b:expr) => {
-                    if LEN < curr + $b.len() {
+                    if capacity < curr + $b.len() {
                         panic!("buffer overflow");
                     } else {
                         std::ptr::copy_nonoverlapping(
