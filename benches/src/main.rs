@@ -1,26 +1,18 @@
 use std::mem::MaybeUninit;
 use std::slice;
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 use buf_min::Buffer;
 use bytes::BytesMut;
 
-criterion_group!(benches, functions);
-criterion_main!(benches);
-
-fn functions(c: &mut Criterion) {
-    c.bench_function("Raw Static", raw_static);
-    c.bench_function("Buffer Bytes", buffer_bytes);
-}
-
 // Raw
 const HELLO: &[u8] = b"Hello world!";
-fn raw_static(b: &mut criterion::Bencher) {
+
+#[inline(never)]
+fn raw_static() -> Vec<u8> {
     unsafe {
         const LEN: usize = HELLO.len();
 
-        b.iter(|| {
             let mut buf: Vec<u8>  = Vec::with_capacity(LEN);
             let mut curr = 0;
             macro_rules! buf_ptr {
@@ -47,16 +39,20 @@ fn raw_static(b: &mut criterion::Bencher) {
             write_b!(HELLO);
             buf.set_len(curr);
             buf
-        });
     }
 }
 
 // Buffer
-fn buffer_bytes(b: &mut criterion::Bencher) {
+#[inline(never)]
+fn buffer_bytes() -> BytesMut {
     const LEN: usize = HELLO.len();
 
-    b.iter(|| {
-        let mut buf: BytesMut = Buffer::with_capacity(LEN);
-        Buffer::extend_from_slice(&mut buf, HELLO);
-    });
+    let mut buf: BytesMut = Buffer::with_capacity(LEN);
+    Buffer::extend_from_slice(&mut buf, HELLO);
+    buf
+}
+
+fn main() {
+    let _ = buffer_bytes();
+    let _ = raw_static();
 }
