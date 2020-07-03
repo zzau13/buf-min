@@ -1,0 +1,20 @@
+[package]
+name = "benches"
+version = "0.0.1"
+publish = false
+edition = "2018"
+
+[workspace]
+members = ["."]
+
+[dependencies]
+bytes = { git = "https://github.com/botika/bytes" }
+buf-min = { path = "../.", features = ["bytes-buf"] }
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "buf-min"
+harness = false
+path = "src/all.rs"
