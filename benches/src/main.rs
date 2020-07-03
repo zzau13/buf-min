@@ -1,7 +1,6 @@
 use std::mem::MaybeUninit;
 use std::slice;
 
-
 use buf_min::Buffer;
 use bytes::BytesMut;
 
@@ -13,34 +12,34 @@ fn raw_static() -> Vec<u8> {
     unsafe {
         const LEN: usize = HELLO.len();
 
-            let mut buf: Vec<u8>  = Vec::with_capacity(LEN);
-            #[allow(unused_mut)]
-            let mut capacity = LEN;
-            let mut curr = 0;
-            macro_rules! buf_ptr {
-                () => {
-                    buf.as_mut_ptr()
-                };
-            }
+        let mut buf: Vec<u8> = Vec::with_capacity(LEN);
+        #[allow(unused_mut)]
+        let mut capacity = LEN;
+        let mut curr = 0;
+        macro_rules! buf_ptr {
+            () => {
+                buf.as_mut_ptr()
+            };
+        }
 
-            macro_rules! write_b {
-                ($b:expr) => {
-                    if capacity < curr + $b.len() {
-                        panic!("buffer overflow");
-                    } else {
-                        std::ptr::copy_nonoverlapping(
-                            ($b as *const [u8] as *const u8),
-                            buf_ptr!().add(curr),
-                            $b.len(),
-                        );
-                        curr += $b.len();
-                    }
-                };
-            }
+        macro_rules! write_b {
+            ($b:expr) => {
+                if capacity < curr + $b.len() {
+                    panic!("buffer overflow");
+                } else {
+                    std::ptr::copy_nonoverlapping(
+                        ($b as *const [u8] as *const u8),
+                        buf_ptr!().add(curr),
+                        $b.len(),
+                    );
+                    curr += $b.len();
+                }
+            };
+        }
 
-            write_b!(HELLO);
-            buf.set_len(curr);
-            buf
+        write_b!(HELLO);
+        buf.set_len(curr);
+        buf
     }
 }
 

@@ -21,7 +21,7 @@ fn raw_static(b: &mut criterion::Bencher) {
         const LEN: usize = HELLO.len();
 
         b.iter(|| {
-            let mut buf: Vec<u8>  = Vec::with_capacity(LEN);
+            let mut buf: Vec<u8> = Vec::with_capacity(LEN);
             let mut curr = 0;
             macro_rules! buf_ptr {
                 () => {
