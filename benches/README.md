@@ -67,7 +67,7 @@ benches::ibuffer:
  mov     esi, 1
  call    qword, ptr, [rip, +, __rust_alloc@GOTPCREL]
  test    rax, rax
- je      .LBB8_1
+ je      .LBB9_1
  mov     qword, ptr, [rsp], rax
  movq    xmm0, r14
  movdqu  xmmword, ptr, [rsp, +, 8], xmm0
@@ -86,7 +86,7 @@ benches::ibuffer:
  pop     rbx
  pop     r14
  ret
-.LBB8_1:
+.LBB9_1:
  mov     edi, 12
  mov     esi, 1
  call    alloc::raw_vec::RawVec<T,A>::allocate_in::{{closure}}

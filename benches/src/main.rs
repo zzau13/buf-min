@@ -94,8 +94,7 @@ impl IBuff {
 
     #[inline(always)]
     fn write(&mut self, s: &[u8]) {
-        let new = self.len + s.len();
-        if self.cap < new {
+        if self.cap < self.len + s.len(){
             panic!("buffer overflow");
         } else {
             unsafe {
@@ -105,7 +104,7 @@ impl IBuff {
                     s.len(),
                 );
             }
-            self.len += new;
+            self.len += s.len();
         }
     }
 
