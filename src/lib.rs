@@ -86,7 +86,6 @@ impl Buffer for BytesMut {
             new_len,
             self.capacity()
         );
-        // TODO: inline
         self.set_len(new_len);
     }
 
