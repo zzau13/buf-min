@@ -41,6 +41,37 @@ fn raw_static() -> Vec<u8> {
 }
 
 #[inline(never)]
+fn raw_sstatic() -> [u8; HELLO.len()] {
+    unsafe {
+        const LEN: usize = HELLO.len();
+
+        let mut buf: [MaybeUninit<u8>; LEN] = [MaybeUninit::uninit(); LEN];
+        macro_rules! buf_ptr {
+            () => {
+                &mut buf as *mut _ as *mut u8
+            };
+        }
+
+        macro_rules! write_b {
+            ($b:expr) => {
+                if LEN < $b.len() {
+                    panic!("buffer overflow");
+                } else {
+                    std::ptr::copy_nonoverlapping(
+                        ($b as *const [u8] as *const u8),
+                        buf_ptr!(),
+                        $b.len(),
+                    );
+                }
+            };
+        }
+
+        write_b!(HELLO);
+        std::mem::transmute(buf)
+    }
+}
+
+#[inline(never)]
 fn raw_dyn() -> Vec<u8> {
     unsafe {
         const LEN: usize = HELLO.len();
@@ -94,7 +125,7 @@ impl IBuff {
 
     #[inline(always)]
     fn write(&mut self, s: &[u8]) {
-        if self.cap < self.len + s.len(){
+        if self.cap < self.len + s.len() {
             panic!("buffer overflow");
         } else {
             unsafe {
@@ -136,6 +167,7 @@ fn buffer_bytes() -> BytesMut {
 
 fn main() {
     let _ = raw_static();
+    let _ = raw_sstatic();
     let _ = raw_dyn();
     let _ = ibuffer();
     let _ = buffer_bytes();

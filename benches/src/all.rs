@@ -1,7 +1,7 @@
 use std::mem::MaybeUninit;
 use std::slice;
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 
 use buf_min::Buffer;
 use bytes::BytesMut;
@@ -10,6 +10,7 @@ criterion_group!(benches, functions);
 criterion_main!(benches);
 
 fn functions(c: &mut Criterion) {
+    c.bench_function("Raw \"Super\" Static", raw_sstatic);
     c.bench_function("Raw Static", raw_static);
     c.bench_function("Raw Dyn", raw_dyn);
     c.bench_function("Buffer Bytes", buffer_bytes);
@@ -46,7 +47,39 @@ fn raw_static(b: &mut criterion::Bencher) {
             }
 
             write_b!(HELLO);
-            black_box(slice::from_raw_parts(&buf.as_ptr(), curr))
+            slice::from_raw_parts(&buf as *const _ as *const u8, curr).to_vec()
+        });
+    }
+}
+
+fn raw_sstatic(b: &mut criterion::Bencher) {
+    unsafe {
+        b.iter(|| {
+            const LEN: usize = HELLO.len();
+
+            let mut buf: [MaybeUninit<u8>; LEN] = [MaybeUninit::uninit(); LEN];
+            macro_rules! buf_ptr {
+                () => {
+                    &mut buf as *mut _ as *mut u8
+                };
+            }
+
+            macro_rules! write_b {
+                ($b:expr) => {
+                    if LEN < $b.len() {
+                        panic!("buffer overflow");
+                    } else {
+                        std::ptr::copy_nonoverlapping(
+                            ($b as *const [u8] as *const u8),
+                            buf_ptr!(),
+                            $b.len(),
+                        );
+                    }
+                };
+            }
+
+            write_b!(HELLO);
+            std::mem::transmute::<_, [u8; HELLO.len()]>(buf)
         });
     }
 }

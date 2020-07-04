@@ -1,5 +1,14 @@
 # Assembler
 ```asm
+benches::raw_sstatic:
+ mov     eax, dword, ptr, [rip, +, .L__unnamed_2+8]
+ mov     dword, ptr, [rdi, +, 8], eax
+ mov     rax, qword, ptr, [rip, +, .L__unnamed_2]
+ mov     qword, ptr, [rdi], rax
+ ret
+```
+
+```asm
 benches::raw_static:
  push    rbx
  mov     rbx, rdi
