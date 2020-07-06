@@ -15,3 +15,6 @@ bytes-buf = ["bytes"]
 
 [dependencies]
 bytes = { git = "https://github.com/tokio-rs/bytes", optional = true }
+
+[package.metadata.docs.rs]
+all-features = true
