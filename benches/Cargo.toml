@@ -8,7 +8,7 @@ edition = "2018"
 members = ["."]
 
 [dependencies]
-bytes = { git = "https://github.com/tokio-rs/bytes"}
+bytes = "0.5"
 buf-min = { path = "../.", features = ["bytes-buf"] }
 
 [dev-dependencies]

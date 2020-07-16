@@ -14,7 +14,7 @@ edition = "2018"
 bytes-buf = ["bytes"]
 
 [dependencies]
-bytes = { git = "https://github.com/tokio-rs/bytes", optional = true }
+bytes = { version = "0.5", optional = true }
 
 [package.metadata.docs.rs]
 all-features = true
