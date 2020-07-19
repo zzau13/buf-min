@@ -26,6 +26,11 @@ pub trait Buffer {
     /// Can panic if current capacity plus `additional` overflows usize
     fn reserve(&mut self, additional: usize);
 
+    /// Splits the buffer into two at the end.
+    fn split_end(&mut self) -> Self
+    where
+        Self: Sized;
+
     /// Converts `self` into a Freeze type
     fn freeze(self) -> Self::Freeze;
 
@@ -73,6 +78,15 @@ impl Buffer for BytesMut {
     }
 
     #[inline(always)]
+    fn split_end(&mut self) -> Self
+    where
+        Self: Sized,
+    {
+        let len = self.len();
+        self.split_to(len)
+    }
+
+    #[inline(always)]
     fn freeze(self) -> Self::Freeze {
         self.freeze()
     }
@@ -106,6 +120,13 @@ mod test {
         let e = b"Hello world!";
         let mut buf: BytesMut = Buffer::with_capacity(0);
         Buffer::extend_from_slice(&mut buf, e);
-        assert_eq!(e, &Buffer::freeze(buf)[..])
+        assert_eq!(e, &Buffer::freeze(buf)[..]);
+
+        let mut buf: BytesMut = Buffer::with_capacity(14);
+        Buffer::extend_from_slice(&mut buf, e);
+        let buf_c = Buffer::split_end(&mut buf);
+        assert_eq!(&buf_c[..], e);
+        assert_eq!(buf.len(), 0);
+        assert_eq!(buf.capacity(), 2);
     }
 }
