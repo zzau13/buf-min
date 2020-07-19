@@ -65,6 +65,7 @@ impl Buffer for BytesMut {
         BytesMut::with_capacity(capacity)
     }
 
+    #[inline]
     fn is_empty(&self) -> bool {
         self.is_empty()
     }
