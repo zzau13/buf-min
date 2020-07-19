@@ -13,6 +13,9 @@ pub trait Buffer {
     where
         Self: Sized;
 
+    /// Returns true if the `Buffer` has a length of 0.
+    fn is_empty(&self) -> bool;
+
     /// Appends given bytes to this `Buffer`.
     ///
     /// # Panics
@@ -60,6 +63,10 @@ impl Buffer for BytesMut {
         Self: Sized,
     {
         BytesMut::with_capacity(capacity)
+    }
+
+    fn is_empty(&self) -> bool {
+        self.is_empty()
     }
 
     #[inline]
@@ -127,6 +134,7 @@ mod test {
         let buf_c = Buffer::split_end(&mut buf);
         assert_eq!(&buf_c[..], e);
         assert_eq!(buf.len(), 0);
+        assert!(Buffer::is_empty(&buf));
         assert_eq!(buf.capacity(), 2);
     }
 }
