@@ -30,7 +30,7 @@ pub trait Buffer {
     fn reserve(&mut self, additional: usize);
 
     /// Splits the buffer into two at the end.
-    fn split_end(&mut self) -> Self
+    fn split(&mut self) -> Self
     where
         Self: Sized;
 
@@ -86,12 +86,11 @@ impl Buffer for BytesMut {
     }
 
     #[inline(always)]
-    fn split_end(&mut self) -> Self
+    fn split(&mut self) -> Self
     where
         Self: Sized,
     {
-        let len = self.len();
-        self.split_to(len)
+        self.split()
     }
 
     #[inline(always)]
@@ -132,7 +131,7 @@ mod test {
 
         let mut buf: BytesMut = Buffer::with_capacity(14);
         Buffer::extend_from_slice(&mut buf, e);
-        let buf_c = Buffer::split_end(&mut buf);
+        let buf_c = Buffer::split(&mut buf);
         assert_eq!(&buf_c[..], e);
         assert_eq!(buf.len(), 0);
         assert!(Buffer::is_empty(&buf));
