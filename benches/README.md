@@ -106,45 +106,32 @@ benches::ibuffer:
 benches::buffer_bytes:
  push    r14
  push    rbx
- sub     rsp, 24
+ push    rax
  mov     r14, rdi
- mov     ebx, 12
  mov     edi, 12
  mov     esi, 1
  call    qword, ptr, [rip, +, __rust_alloc@GOTPCREL]
  test    rax, rax
- je      .LBB9_3
- mov     qword, ptr, [rsp], rax
- movq    xmm0, rbx
- movdqu  xmmword, ptr, [rsp, +, 8], xmm0
- mov     rdi, rax
- call    qword, ptr, [rip, +, _ZN5bytes9bytes_mut4vptr17h6a4fc07fe96f4ab7E@GOTPCREL]
+ je      .LBB9_1
  mov     rbx, rax
  mov     edi, 12
- call    qword, ptr, [rip, +, _ZN5bytes9bytes_mut25original_capacity_to_repr17h38cfc6ebb0c2c5ccE@GOTPCREL]
+ call    qword, ptr, [rip, +, _ZN5bytes9bytes_mut25original_capacity_to_repr17hdee3bb1ec6cf6c4fE@GOTPCREL]
  lea     rax, [4*rax, +, 1]
  mov     qword, ptr, [r14], rbx
  mov     qword, ptr, [r14, +, 16], 12
  mov     qword, ptr, [r14, +, 24], rax
- mov     eax, dword, ptr, [rip, +, .L__unnamed_2+8]
- mov     dword, ptr, [rbx, +, 8], eax
  mov     rax, qword, ptr, [rip, +, .L__unnamed_2]
  mov     qword, ptr, [rbx], rax
+ mov     eax, dword, ptr, [rip, +, .L__unnamed_2+8]
+ mov     dword, ptr, [rbx, +, 8], eax
  mov     qword, ptr, [r14, +, 8], 12
- add     rsp, 24
+ add     rsp, 8
  pop     rbx
  pop     r14
  ret
-.LBB9_3:
+.LBB9_1:
  mov     edi, 12
  mov     esi, 1
- call    qword, ptr, [rip, +, _ZN5alloc5alloc18handle_alloc_error17h7f6a7a00afe6ad92E@GOTPCREL]
- ud2
-.LBB9_4:
- mov     rbx, rax
- mov     rdi, rsp
- call    core::ptr::drop_in_place
- mov     rdi, rbx
- call    _Unwind_Resume
+ call    qword, ptr, [rip, +, _ZN5alloc5alloc18handle_alloc_error17hb4f79dda046419e4E@GOTPCREL]
  ud2
 ```
