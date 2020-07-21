@@ -126,5 +126,6 @@ fn buffer_bytes(b: &mut criterion::Bencher) {
     b.iter(|| {
         let mut buf: BytesMut = Buffer::with_capacity(LEN);
         Buffer::extend_from_slice(&mut buf, HELLO);
+        Buffer::freeze(buf)
     });
 }

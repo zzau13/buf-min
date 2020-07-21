@@ -2,7 +2,7 @@ use std::mem::MaybeUninit;
 use std::slice;
 
 use buf_min::Buffer;
-use bytes::BytesMut;
+use bytes::{BytesMut, Bytes};
 
 // Raw
 const HELLO: &[u8] = b"Hello world!";
@@ -157,12 +157,12 @@ fn ibuffer() -> Vec<u8> {
 
 // Buffer
 #[inline(never)]
-fn buffer_bytes() -> BytesMut {
+fn buffer_bytes() -> Bytes {
     const LEN: usize = HELLO.len();
 
     let mut buf: BytesMut = Buffer::with_capacity(LEN);
     Buffer::extend_from_slice(&mut buf, HELLO);
-    buf
+    Buffer::freeze(buf)
 }
 
 fn main() {

@@ -14,7 +14,7 @@ edition = "2018"
 bytes-buf = ["bytes"]
 
 [dependencies]
-bytes = { git = "https://github.com/botika/bytes", branch = "alloc", optional = true }
+bytes = { git = "https://github.com/botika/bytes", rev = "03f963b", optional = true }
 
 [package.metadata.docs.rs]
 all-features = true
