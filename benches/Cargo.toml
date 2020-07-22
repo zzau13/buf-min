@@ -8,7 +8,7 @@ edition = "2018"
 members = ["."]
 
 [dependencies]
-bytes = { git = "https://github.com/botika/bytes", rev = "03f963b" }
+bytes = { git = "https://github.com/botika/bytes", rev = "1e89e8c" }
 buf-min = { path = "../.", features = ["bytes-buf"] }
 
 [dev-dependencies]
