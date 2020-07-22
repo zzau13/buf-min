@@ -58,8 +58,8 @@ impl Buffer for Vec<u8> {
 
     #[inline]
     fn with_capacity(capacity: usize) -> Self
-        where
-            Self: Sized,
+    where
+        Self: Sized,
     {
         Vec::with_capacity(capacity)
     }
@@ -87,8 +87,10 @@ impl Buffer for Vec<u8> {
         }
     }
 
-    fn split(&mut self) -> Self where
-        Self: Sized {
+    fn split(&mut self) -> Self
+    where
+        Self: Sized,
+    {
         unimplemented!()
     }
 
