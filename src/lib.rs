@@ -94,7 +94,7 @@ impl Buffer for Vec<u8> {
 
     #[inline]
     fn freeze(mut self) -> Self::Freeze {
-        self.truncate(self.len());
+        self.shrink_to_fit();
         self
     }
 
