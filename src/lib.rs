@@ -29,11 +29,6 @@ pub trait Buffer {
     /// Can panic if current capacity plus `additional` overflows usize
     fn reserve(&mut self, additional: usize);
 
-    /// Splits the buffer into two at the end.
-    fn split(&mut self) -> Self
-    where
-        Self: Sized;
-
     /// Converts `self` into a Freeze type
     fn freeze(self) -> Self::Freeze;
 
@@ -87,13 +82,6 @@ impl Buffer for Vec<u8> {
         }
     }
 
-    fn split(&mut self) -> Self
-    where
-        Self: Sized,
-    {
-        unimplemented!()
-    }
-
     #[inline]
     fn freeze(mut self) -> Self::Freeze {
         self.shrink_to_fit();
@@ -144,14 +132,6 @@ impl Buffer for BytesMut {
     }
 
     #[inline(always)]
-    fn split(&mut self) -> Self
-    where
-        Self: Sized,
-    {
-        self.split()
-    }
-
-    #[inline(always)]
     fn freeze(self) -> Self::Freeze {
         self.freeze()
     }
@@ -191,11 +171,6 @@ mod test {
 
         let mut buf: Vec<u8> = Buffer::with_capacity(14);
         Buffer::extend_from_slice(&mut buf, e);
-        // let buf_c = Buffer::split(&mut buf);
-        // assert_eq!(&buf_c[..], e);
-        // assert_eq!(buf.len(), 0);
-        // assert!(Buffer::is_empty(&buf));
-        // assert_eq!(buf.capacity(), 2);
     }
 }
 
@@ -215,13 +190,5 @@ mod test_bytes {
         let mut buf: BytesMut = Buffer::with_capacity(124);
         Buffer::extend_from_slice(&mut buf, e);
         assert_eq!(e, &Buffer::freeze(buf)[..]);
-
-        let mut buf: BytesMut = Buffer::with_capacity(14);
-        Buffer::extend_from_slice(&mut buf, e);
-        let buf_c = Buffer::split(&mut buf);
-        assert_eq!(&buf_c[..], e);
-        assert_eq!(buf.len(), 0);
-        assert!(Buffer::is_empty(&buf));
-        assert_eq!(buf.capacity(), 2);
     }
 }
