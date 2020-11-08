@@ -124,11 +124,11 @@ impl Buffer for BytesMut {
 
     #[inline]
     fn extend_from_slice(&mut self, src: &[u8]) {
-        self.reserve(src.len());
+        Buffer::reserve(self, src.len());
         unsafe {
             debug_assert!(self.capacity() - self.len() >= src.len());
-            std::ptr::copy_nonoverlapping(src.as_ptr(), self.buf_ptr(), src.len());
-            self.advance(src.len())
+            std::ptr::copy_nonoverlapping(src.as_ptr(), Buffer::buf_ptr(self), src.len());
+            Buffer::advance(self, src.len());
         }
     }
 
