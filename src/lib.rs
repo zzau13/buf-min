@@ -1,7 +1,13 @@
 // Adapted from [`bytes`](https://github.com/tokio-rs/bytes)
 
-#[cfg(feature = "bytes-buf")]
-use bytes::{Bytes, BytesMut};
+#[cfg(all(feature = "bytes-buf-tokio3", feature = "bytes-buf"))]
+compile_error!("Use bytes-buf or bytes-buf-tokio3 feature no both");
+
+#[cfg(all(feature = "bytes-buf", not(feature = "bytes-buf-tokio3")))]
+pub use bytes::{Bytes, BytesMut};
+
+#[cfg(all(feature = "bytes-buf-tokio3", not(feature = "bytes-buf")))]
+pub use bytes_tokio3::{Bytes, BytesMut};
 
 /// Minimal Buffer trait
 pub trait Buffer {
@@ -99,7 +105,7 @@ impl Buffer for Vec<u8> {
     }
 }
 
-#[cfg(feature = "bytes-buf")]
+#[cfg(any(feature = "bytes-buf", feature = "bytes-buf-tokio3"))]
 impl Buffer for BytesMut {
     type Freeze = Bytes;
 
@@ -174,11 +180,9 @@ mod test {
     }
 }
 
-#[cfg(all(test, feature = "bytes-buf"))]
+#[cfg(all(test, any(feature = "bytes-buf", feature = "bytes-buf-tokio3")))]
 mod test_bytes {
     use super::*;
-
-    use bytes::BytesMut;
 
     #[test]
     fn test() {

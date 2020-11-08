@@ -44,11 +44,19 @@ jobs:
           path: ~/.cargo/git
           key: ${{ matrix.version }}-x86_64-apple-darwin-cargo-index-trimmed-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Run tests
+      - name: Run tests feature bytes-buf tokio2
         uses: actions-rs/cargo@v1
+        timeout-minutes: 40
         with:
           command: test
-          args: --all --all-features --no-fail-fast -- --nocapture
+          args: --all --features bytes-buf --no-fail-fast -- --nocapture
+
+      - name: Run tests feature bytes-buf tokio3
+        uses: actions-rs/cargo@v1
+        timeout-minutes: 40
+        with:
+          command: test
+          args: --all --features bytes-buf-tokio3 --no-fail-fast -- --nocapture
 
       - name: Clear the cargo caches
         run: |
