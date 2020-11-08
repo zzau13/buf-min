@@ -23,7 +23,6 @@ script:
   - |
     if [[ "$TRAVIS_RUST_VERSION" != "nightly" ]]; then
       cargo fmt -- --check
-      cargo clippy --all-targets --features bytes-buf -- -D warnings
+      cargo clippy --all-targets --all-features -- -D warnings
     fi
-  - cargo test --features bytes-buf --all -- --nocapture
-  - cargo test --features bytes-buf-tokio3 --all -- --nocapture
+  - cargo test --all-features --all -- --nocapture

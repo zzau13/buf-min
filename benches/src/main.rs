@@ -1,8 +1,7 @@
 use std::mem::MaybeUninit;
 use std::slice;
 
-use buf_min::Buffer;
-use bytes::BytesMut;
+use buf_min::{t3::BytesMut, Buffer};
 
 // Raw
 const HELLO: &[u8] = b"Hello world!";

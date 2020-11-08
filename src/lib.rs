@@ -1,14 +1,5 @@
 // Adapted from [`bytes`](https://github.com/tokio-rs/bytes)
 
-#[cfg(all(feature = "bytes-buf-tokio3", feature = "bytes-buf"))]
-compile_error!("Use bytes-buf or bytes-buf-tokio3 feature no both");
-
-#[cfg(all(feature = "bytes-buf", not(feature = "bytes-buf-tokio3")))]
-pub use bytes::{Bytes, BytesMut};
-
-#[cfg(all(feature = "bytes-buf-tokio3", not(feature = "bytes-buf")))]
-pub use bytes_tokio3::{Bytes, BytesMut};
-
 /// Minimal Buffer trait
 pub trait Buffer {
     /// Into immutable type
@@ -105,59 +96,93 @@ impl Buffer for Vec<u8> {
     }
 }
 
-#[cfg(any(feature = "bytes-buf", feature = "bytes-buf-tokio3"))]
-impl Buffer for BytesMut {
-    type Freeze = Bytes;
+macro_rules! implement {
+    ($base:path) => {
+        pub use $base::{Bytes, BytesMut};
 
-    #[inline]
-    fn with_capacity(capacity: usize) -> Self
-    where
-        Self: Sized,
-    {
-        BytesMut::with_capacity(capacity)
-    }
+        impl Buffer for BytesMut {
+            type Freeze = Bytes;
 
-    #[inline]
-    fn is_empty(&self) -> bool {
-        self.is_empty()
-    }
+            #[inline]
+            fn with_capacity(capacity: usize) -> Self
+            where
+                Self: Sized,
+            {
+                BytesMut::with_capacity(capacity)
+            }
 
-    #[inline]
-    fn extend_from_slice(&mut self, src: &[u8]) {
-        Buffer::reserve(self, src.len());
-        unsafe {
-            debug_assert!(self.capacity() - self.len() >= src.len());
-            std::ptr::copy_nonoverlapping(src.as_ptr(), Buffer::buf_ptr(self), src.len());
-            Buffer::advance(self, src.len());
+            #[inline]
+            fn is_empty(&self) -> bool {
+                self.is_empty()
+            }
+
+            #[inline]
+            fn extend_from_slice(&mut self, src: &[u8]) {
+                Buffer::reserve(self, src.len());
+                unsafe {
+                    debug_assert!(self.capacity() - self.len() >= src.len());
+                    std::ptr::copy_nonoverlapping(src.as_ptr(), Buffer::buf_ptr(self), src.len());
+                    Buffer::advance(self, src.len());
+                }
+            }
+
+            #[inline(always)]
+            fn reserve(&mut self, additional: usize) {
+                self.reserve(additional);
+            }
+
+            #[inline(always)]
+            fn freeze(self) -> Self::Freeze {
+                self.freeze()
+            }
+
+            #[inline]
+            unsafe fn advance(&mut self, cnt: usize) {
+                let new_len = self.len() + cnt;
+                debug_assert!(
+                    new_len <= self.capacity(),
+                    "new_len = {}; capacity = {}",
+                    new_len,
+                    self.capacity()
+                );
+                self.set_len(new_len);
+            }
+
+            #[inline]
+            unsafe fn buf_ptr(&mut self) -> *mut u8 {
+                self.as_mut_ptr().add(self.len())
+            }
         }
-    }
 
-    #[inline(always)]
-    fn reserve(&mut self, additional: usize) {
-        self.reserve(additional);
-    }
+        #[cfg(test)]
+        mod test_bytes {
+            use super::*;
 
-    #[inline(always)]
-    fn freeze(self) -> Self::Freeze {
-        self.freeze()
-    }
+            #[test]
+            fn test() {
+                let e = b"Hello world!";
+                let mut buf: BytesMut = Buffer::with_capacity(0);
+                Buffer::extend_from_slice(&mut buf, e);
+                assert_eq!(e, &Buffer::freeze(buf)[..]);
 
-    #[inline]
-    unsafe fn advance(&mut self, cnt: usize) {
-        let new_len = self.len() + cnt;
-        debug_assert!(
-            new_len <= self.capacity(),
-            "new_len = {}; capacity = {}",
-            new_len,
-            self.capacity()
-        );
-        self.set_len(new_len);
-    }
+                let mut buf: BytesMut = Buffer::with_capacity(124);
+                Buffer::extend_from_slice(&mut buf, e);
+                assert_eq!(e, &Buffer::freeze(buf)[..]);
+            }
+        }
+    };
+}
 
-    #[inline]
-    unsafe fn buf_ptr(&mut self) -> *mut u8 {
-        self.as_mut_ptr().add(self.len())
-    }
+#[cfg(feature = "bytes-buf-tokio2")]
+pub mod t2 {
+    use super::*;
+    implement!(bytes_tokio2);
+}
+
+#[cfg(feature = "bytes-buf-tokio3")]
+pub mod t3 {
+    use super::*;
+    implement!(bytes_tokio3);
 }
 
 #[cfg(test)]
@@ -177,22 +202,5 @@ mod test {
 
         let mut buf: Vec<u8> = Buffer::with_capacity(14);
         Buffer::extend_from_slice(&mut buf, e);
-    }
-}
-
-#[cfg(all(test, any(feature = "bytes-buf", feature = "bytes-buf-tokio3")))]
-mod test_bytes {
-    use super::*;
-
-    #[test]
-    fn test() {
-        let e = b"Hello world!";
-        let mut buf: BytesMut = Buffer::with_capacity(0);
-        Buffer::extend_from_slice(&mut buf, e);
-        assert_eq!(e, &Buffer::freeze(buf)[..]);
-
-        let mut buf: BytesMut = Buffer::with_capacity(124);
-        Buffer::extend_from_slice(&mut buf, e);
-        assert_eq!(e, &Buffer::freeze(buf)[..]);
     }
 }

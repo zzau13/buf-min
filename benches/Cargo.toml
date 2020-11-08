@@ -8,8 +8,7 @@ edition = "2018"
 members = ["."]
 
 [dependencies]
-bytes = "0.5"
-buf-min = { path = "../.", features = ["bytes-buf"] }
+buf-min = { path = "../.", features = ["bytes-buf-tokio3"] }
 
 [dev-dependencies]
 criterion = "0.3"

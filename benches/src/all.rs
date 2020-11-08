@@ -3,8 +3,7 @@ use std::slice;
 
 use criterion::{criterion_group, criterion_main, Criterion};
 
-use buf_min::Buffer;
-use bytes::BytesMut;
+use buf_min::{Buffer, t3::BytesMut};
 
 criterion_group!(benches, functions);
 criterion_main!(benches);
