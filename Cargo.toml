@@ -19,4 +19,4 @@ bytes-tokio2 = { version = "0.5", package = "bytes", optional = true }
 bytes-tokio3 = { version = "0.6", package = "bytes", optional = true }
 
 [package.metadata.docs.rs]
-all-features = true
+features = ["bytes-buf-tokio2"]

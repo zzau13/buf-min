@@ -174,12 +174,14 @@ macro_rules! implement {
 }
 
 #[cfg(feature = "bytes-buf-tokio2")]
+/// tokio/bytes@0.5 implementation and reexport
 pub mod t2 {
     use super::*;
     implement!(bytes_tokio2);
 }
 
 #[cfg(feature = "bytes-buf-tokio3")]
+/// tokio/bytes@0.6 implementation and reexport
 pub mod t3 {
     use super::*;
     implement!(bytes_tokio3);
