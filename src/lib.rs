@@ -96,6 +96,7 @@ impl Buffer for Vec<u8> {
     }
 }
 
+#[cfg(any(feature = "bytes-buf-tokio2", feature = "bytes-buf-tokio3"))]
 macro_rules! implement {
     ($base:path) => {
         pub use $base::{Bytes, BytesMut};
