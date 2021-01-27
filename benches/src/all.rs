@@ -3,7 +3,7 @@ use std::slice;
 
 use criterion::{criterion_group, criterion_main, Criterion};
 
-use buf_min::{Buffer, t3::BytesMut};
+use buf_min::{t3::BytesMut, Buffer};
 
 criterion_group!(benches, functions);
 criterion_main!(benches);
@@ -124,6 +124,8 @@ fn buffer_bytes(b: &mut criterion::Bencher) {
 
     b.iter(|| {
         let mut buf: BytesMut = Buffer::with_capacity(LEN);
-        Buffer::extend_from_slice(&mut buf, HELLO);
+        unsafe {
+            Buffer::extend_from_slice(&mut buf, HELLO);
+        }
     });
 }
