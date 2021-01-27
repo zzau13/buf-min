@@ -160,7 +160,9 @@ fn buffer_bytes() -> BytesMut {
     const LEN: usize = HELLO.len();
 
     let mut buf: BytesMut = Buffer::with_capacity(LEN);
-    Buffer::extend_from_slice(&mut buf, HELLO);
+    unsafe {
+        Buffer::extend_from_slice(&mut buf, HELLO);
+    }
     buf
 }
 
