@@ -1,6 +1,6 @@
 [package]
 name = "buf-min"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Juan Aguilar Santillana <mhpoin@gmail.com>"]
 description = "Minimal buffer traits"
 keywords = ["buffers"]
@@ -16,7 +16,7 @@ bytes-buf-tokio3 = ["bytes-tokio3"]
 
 [dependencies]
 bytes-tokio2 = { version = "0.5", package = "bytes", optional = true }
-bytes-tokio3 = { version = "0.6", package = "bytes", optional = true }
+bytes-tokio3 = { version = "1.0", package = "bytes", optional = true }
 
 [package.metadata.docs.rs]
-features = ["bytes-buf-tokio2"]
+features = ["bytes-buf-tokio3"]
