@@ -25,6 +25,8 @@ pub trait Buffer {
         }
     }
 
+    fn len(&self) -> usize;
+
     /// Appends given bytes to this `Buffer`.
     ///
     /// # Safety
@@ -77,6 +79,11 @@ impl Buffer for Vec<u8> {
     }
 
     #[inline]
+    fn len(&self) -> usize {
+        self.len()
+    }
+
+    #[inline]
     unsafe fn extend_from_slice(&mut self, src: &[u8]) {
         Buffer::reserve(self, src.len());
         debug_assert!(self.capacity() - self.len() >= src.len());
@@ -123,6 +130,11 @@ impl Buffer for String {
     #[inline]
     fn is_empty(&self) -> bool {
         self.is_empty()
+    }
+
+    #[inline]
+    fn len(&self) -> usize {
+        self.len()
     }
 
     #[inline]
@@ -178,6 +190,11 @@ macro_rules! implement {
             #[inline]
             fn is_empty(&self) -> bool {
                 self.is_empty()
+            }
+
+            #[inline]
+            fn len(&self) -> usize {
+                self.len()
             }
 
             #[inline]
