@@ -13,10 +13,12 @@ edition = "2018"
 [features]
 bytes-buf-tokio2 = ["bytes-tokio2"]
 bytes-buf-tokio3 = ["bytes-tokio3"]
+ntex = ["ntex-bytes"]
 
 [dependencies]
 bytes-tokio2 = { version = "0.5", package = "bytes", optional = true }
 bytes-tokio3 = { version = "1.0", package = "bytes", optional = true }
+ntex-bytes = { version = "0.1", optional = true }
 
 [package.metadata.docs.rs]
 features = ["bytes-buf-tokio3"]

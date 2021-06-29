@@ -171,7 +171,11 @@ impl Buffer for String {
     }
 }
 
-#[cfg(any(feature = "bytes-buf-tokio2", feature = "bytes-buf-tokio3"))]
+#[cfg(any(
+    feature = "bytes-buf-tokio2",
+    feature = "bytes-buf-tokio3",
+    feature = "ntex-bytes"
+))]
 macro_rules! implement {
     ($base:path) => {
         pub use $base::{Bytes, BytesMut};
@@ -260,10 +264,16 @@ pub mod t2 {
 }
 
 #[cfg(feature = "bytes-buf-tokio3")]
-/// tokio/bytes@0.6 implementation and reexport
+/// tokio/bytes@1.0 implementation and reexport
 pub mod t3 {
     use super::*;
     implement!(bytes_tokio3);
+}
+
+#[cfg(feature = "ntex-bytes")]
+pub mod ntex {
+    use super::*;
+    implement!(ntex_bytes);
 }
 
 #[cfg(test)]
