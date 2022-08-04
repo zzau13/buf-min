@@ -17,7 +17,7 @@ ntex = ["ntex-bytes"]
 
 [dependencies]
 bytes-tokio2 = { version = "0.5", package = "bytes", optional = true }
-bytes-tokio3 = { version = "1.0", package = "bytes", optional = true }
+bytes-tokio3 = { version = "1.2", package = "bytes", optional = true }
 ntex-bytes = { version = "0.1", optional = true }
 
 [package.metadata.docs.rs]
