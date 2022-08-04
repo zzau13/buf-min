@@ -171,10 +171,7 @@ impl Buffer for String {
     }
 }
 
-#[cfg(any(
-    feature = "bytes",
-    feature = "ntex-bytes"
-))]
+#[cfg(any(feature = "bytes", feature = "ntex-bytes"))]
 macro_rules! implement {
     ($base:path) => {
         pub use $base::{Bytes, BytesMut};
