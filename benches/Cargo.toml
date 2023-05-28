@@ -11,7 +11,7 @@ members = ["."]
 buf-min = { path = "../.", features = ["bytes-buf-tokio3"] }
 
 [dev-dependencies]
-criterion = "0.4"
+criterion = "0.5"
 
 [[bench]]
 name = "buf-min"
