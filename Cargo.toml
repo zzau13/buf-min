@@ -11,7 +11,7 @@ documentation = "https://docs.rs/buf-min"
 edition = "2021"
 
 [dependencies]
-bytes = { version = "1.3", optional = true }
+bytes = { version = "1.6", optional = true }
 ntex-bytes = { version = "0.1", optional = true }
 
 [package.metadata.docs.rs]
